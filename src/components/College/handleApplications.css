@@ -1,0 +1,172 @@
+:root {
+  /* Theme Variables */
+  --bg-form: rgba(255, 255, 255, 0.85);
+  --bg-form-hover: rgba(255, 255, 255, 0.9);
+  --border-color: #ddd;
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --accent: #6a11cb;
+  --accent-hover: #510dab;
+  --text-color: #222;
+  --message-color: #ff4500;
+  --gradient-start: #e9cce3;
+  --gradient-end: #cf6fde;
+  --input-bg: rgba(255, 255, 255, 0.6);
+  --glass-blur: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Application Upload Form Container */
+.application-upload-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 40px 30px;
+  background: var(--bg-form);
+  border-radius: 12px;
+  box-shadow: 0 5px 20px var(--shadow-color);
+  backdrop-filter: blur(var(--glass-blur));
+  animation: fadeInUp 0.6s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.application-upload-form:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Header */
+.application-upload-form h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); 
+}
+
+
+/* Form Layout */
+.application-upload-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Labels */
+.application-upload-form label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-color);
+}
+
+/* Input Fields */
+.input-container {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: 45px;
+  padding: 12px;
+  background: var(--input-bg);
+  border: 2px solid var(--border-color);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(106, 17, 203, 0.5);
+}
+
+/* Textarea */
+.application-upload-form textarea {
+  resize: vertical;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.application-upload-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(106, 17, 203, 0.5);
+}
+
+/* Button Styling */
+.application-upload-form button {
+  padding: 14px 22px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.application-upload-form button:hover {
+  background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+}
+
+/* Message Styling */
+.message {
+  color: var(--message-color);
+  opacity: 0;
+  font-size: 1rem;
+  text-align: center;
+  transition: opacity 0.5s ease;
+}
+
+.message.loading {
+  opacity: 1;
+}
+
+/* Keyframe Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+  .application-upload-form {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .input {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .application-upload-form {
+    max-width: 450px;
+  }
+}

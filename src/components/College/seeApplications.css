@@ -1,0 +1,74 @@
+
+.custom-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin: auto; /* Center align horizontally and vertically */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 400px;
+  width: calc(100% - 40px); /* Adjust for padding */
+  display: flex; /* Use flexbox */
+  flex-direction: column;
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+.custom-card-content {
+  font-size: 16px;
+  display: grid;
+  grid-gap: 10px;
+}
+
+.custom-card-content p {
+  margin: 10px 0; 
+  transition: transform 0.3s ease;
+}
+
+.custom-card-content p:hover {
+  transform: scale(1.05); /* Scale effect on hover */
+}
+
+.custom-card-button {
+  margin-top: 20px; /* Increased gap between button and paragraphs */
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease; 
+  align-self: center;
+}
+
+.custom-card-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05); /* Scale effect on hover */
+}
+
+.custom-card:hover {
+  transform: translateY(-5px) scale(1.05); /* Scale up and move up slightly */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .custom-card {
+    max-width: 100%;
+  }
+}

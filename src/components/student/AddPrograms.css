@@ -1,0 +1,130 @@
+:root {
+  --container-bg: rgba(255, 255, 255, 0.85); /* Glass effect */
+  --container-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --border-radius: 16px;
+  --transition: 0.4s ease-in-out;
+  --primary-color: #7a48d6; /* Soft purple */
+  --primary-hover: #683bb5;
+  --hover-bg: rgba(180, 97, 216, 0.15);
+  --font-family: 'Poppins', sans-serif;
+  --text-color: #2a2a2a;
+  --input-bg: #f9f9f9;
+  --input-border: #ccc;
+  --gradient-bg: linear-gradient(135deg, var(--primary-color), #8956d8);
+}
+
+/* Table Container */
+.table-container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--container-shadow);
+  margin-bottom: 1.5rem;
+  background: var(--container-bg);
+  backdrop-filter: blur(14px);
+  padding: 2rem;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.table-container:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+}
+
+/* Table Search Bar */
+.table-search {
+  margin-bottom: 1rem;
+}
+
+.table-search input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--input-border);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  background: var(--input-bg);
+  outline: none;
+  transition: all var(--transition);
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-search input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0px 0px 12px rgba(122, 72, 214, 0.4);
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+th, td {
+  padding: 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
+}
+
+th {
+  background: linear-gradient(135deg, #f3f3f3, #e5e5e5);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+tr {
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+tr:hover {
+  background-color: var(--hover-bg);
+  transform: scale(1.015);
+}
+
+/* Button Styling */
+.add-college-btn {
+  background: var(--gradient-bg);
+  color: white;
+  padding: 14px 24px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-transform: capitalize;
+  display: inline-block;
+  box-shadow: 0px 5px 14px rgba(122, 72, 214, 0.3);
+  font-size: 1rem;
+}
+
+.add-college-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover), #6f41ba);
+  transform: scale(1.1);
+  box-shadow: 0px 8px 18px rgba(122, 72, 214, 0.35);
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  th, td {
+    padding: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  .table-container {
+    padding: 1.5rem;
+  }
+
+  .add-college-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+

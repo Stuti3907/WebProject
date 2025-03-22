@@ -1,0 +1,116 @@
+:root {
+  --card-bg: rgba(255, 255, 255, 0.9); /* Soft transparency */
+  --card-radius: 12px;
+  --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --transition-speed: 0.3s;
+  --text-primary: #222;
+  --text-secondary: #555;
+  --title-size: 1.4em;
+  --desc-size: 0.9em;
+  --font-family: 'Poppins', sans-serif;
+  --spacing: 18px;
+  --hover-scale: 1.04;
+  --gradient-bg: linear-gradient(135deg, #f3e7ff, #e3baff);
+}
+
+/* Container */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  background: var(--gradient-bg);
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  width: 100%;
+  max-width: 400px;
+  padding: var(--spacing);
+  margin: 0 20px 20px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(var(--hover-scale));
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* Image */
+.image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform var(--transition-speed) ease;
+  border-radius: var(--card-radius);
+}
+
+.card:hover .image {
+  transform: scale(1.07);
+}
+
+/* Content */
+.content {
+  padding: var(--spacing) 0;
+  font-family: var(--font-family);
+  text-align: left;
+}
+
+.title {
+  font-size: var(--title-size);
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.description {
+  font-size: var(--desc-size);
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+/* Requirements List */
+.requirements {
+  font-size: var(--desc-size);
+  color: var(--text-secondary);
+}
+
+.requirements ul {
+  padding-left: 20px;
+}
+
+.requirements li {
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.requirements li::before {
+  content: "✔";
+  color: var(--text-primary);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .card {
+    width: calc(100% - 40px);
+    margin: 10px;
+  }
+}

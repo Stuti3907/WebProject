@@ -1,0 +1,161 @@
+:root {
+  --primary: #ef52f2;
+  --primary-light: #ee99f4;
+  --secondary: #333;
+  --bg-light: #fff;
+  --bg-gradient: linear-gradient(135deg, #e9cce3, #cf6fde);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --transition: 0.3s ease;
+  --font-family: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--bg-gradient);
+  color: var(--secondary);
+  overflow-x: hidden;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width: 1200px;
+  background: var(--bg-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Header */
+.dashboard-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.dashboard-header p {
+  margin: 0;
+  font-size: 1.8em;
+}
+
+/* Tab Navigation */
+.tab-nav {
+  display: flex;
+  background: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+.tab-nav-button {
+  flex: 1;
+  padding: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  color: var(--secondary);
+  font-weight: 500;
+}
+.tab-nav-button:hover {
+  background: #eee;
+}
+.tab-nav-button.active {
+  font-weight: bold;
+  border-bottom: 3px solid var(--primary);
+  color: var(--primary);
+}
+
+/* Main Content */
+.dashboard-main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section Styling */
+.application-form,
+.add-program-form,
+.profile-page {
+  background: var(--bg-light);
+  padding: 20px;
+  flex: 1;
+  margin: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.application-form:hover,
+.add-program-form:hover,
+.profile-page:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-5px);
+}
+.application-form h2,
+.add-program-form h2,
+.profile-page h2 {
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  font-size: 1.5em;
+}
+
+/* Card Container */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Footer */
+.dashboard-footer {
+  background: var(--primary);
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border-top: 2px solid var(--primary-light);
+}
+.dashboard-footer p {
+  color: #fff;
+  margin: 0;
+  font-size: 1em;
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 15px;
+  }
+  .tab-nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tab-nav-button {
+    padding: 12px;
+    font-size: 1em;
+    width: 100%;
+  }
+  .application-form,
+  .add-program-form,
+  .profile-page {
+    margin: 10px 0;
+    padding: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-main {
+    padding: 40px;
+  }
+}
+

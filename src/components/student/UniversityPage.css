@@ -1,0 +1,116 @@
+:root {
+  --primary-purple: #cd7ae8;
+  --primary-purple-dark: #722ce4;
+  --warning: #ff5722;
+  --text-dark: #333;
+  --text-light: #666;
+  --bg-light: #fff;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --transition: 0.3s ease;
+}
+
+.university-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.university-template {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.university-template:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.university-image {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
+
+.university-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition);
+}
+
+.university-image img:hover {
+  transform: scale(1.05);
+}
+
+.university-details {
+  padding: 2rem;
+}
+
+.university-name {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.detail {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.value {
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.submit-button {
+  background-color: var(--primary-purple);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+.submit-button:hover {
+  background-color: var(--primary-purple-dark);
+  transform: translateY(-2px);
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.warning-text {
+  color: var(--warning);
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .university-template {
+      flex-direction: row;
+  }
+  
+  .university-image {
+      width: 40%;
+      height: auto;
+  }
+  
+  .university-details {
+      width: 60%;
+  }
+}
+

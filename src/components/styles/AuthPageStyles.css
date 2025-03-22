@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #F3F3F3;
+}
+
+h2{
+  color: purple;
+}
+
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e8d1e4, #b796ed); 
+  padding: 20px;
+  color: #333;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+  padding: 40px;
+  text-align: center;
+}
+
+.input-container {
+  width: 100%;
+  position: relative;
+}
+
+.input1 {
+  box-sizing: border-box;
+  height: 50px;
+  width: 100%;
+  padding: 0 10px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input1:focus {
+  outline: none;
+  border-color: #e38aeb;
+  box-shadow: 0 0 5px rgba(163, 158, 181, 0.5);
+}
+
+.auth-form select {
+  box-sizing: border-box;
+  height: 50px;
+  width: 100%;
+  padding: 0 10px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+  color: grey;
+  text-transform: none; 
+
+}
+
+.auth-form select option:not(:first-child) {
+  color: black;
+}
+
+.auth-form select:focus {
+  outline: none;
+  border-color: #e6b1e8;
+  box-shadow: 0 0 5px rgba(163, 158, 181, 0.5);
+}
+
+.auth-form button {
+  padding: 15px;
+  width: 80%;
+  border: none;
+  border-radius: 8px;
+  background-color: #e381ec;
+  color: #f2ebf0;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  align-self: center;
+}
+
+.auth-form button:hover {
+  background-color: #f5bff6;
+  transform: scale(1.02);
+}
+
+.auth-switch {
+  margin-top: 20px;
+  color: #555;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.signup-button {
+  background-color: #d17dc6; 
+  color: #f6f0f7;            
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  text-decoration: underline; 
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.signup-button:hover {
+  background-color: #e787fa; 
+}
+
+@media (min-width: 768px) {
+  .auth-form {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-form {
+    width: 40%;
+  }
+}
+
