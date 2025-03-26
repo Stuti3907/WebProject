@@ -6,6 +6,7 @@ import './seeApplications.css';
 
 const SeeApplicationsPage = () => {
   const [studentDetails, setStudentDetails] = useState(null);
+  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { studentId } = useParams(); // Retrieve studentId from URL parameters
@@ -32,28 +33,36 @@ const SeeApplicationsPage = () => {
           return;
         }
 
-        // Convert documents to an array, ensuring unique entries
-        const applications = querySnapshot.docs.map(doc => ({
+        // Convert documents to an array
+        const allApplications = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        // Remove duplicates using studentId
-        const uniqueApplications = applications.filter(
-          (app, index, self) => 
-            index === self.findIndex(t => t.studentId === app.studentId)
-        );
-
-        // Use the latest entry (if multiple exist)
-        uniqueApplications.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-        const latestApplication = uniqueApplications[0];
-
-        if (latestApplication.studentDetails) {
-          setStudentDetails(latestApplication.studentDetails);
+        // Sort by timestamp (newest first)
+        allApplications.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
+        
+        // Filter out duplicate applications (keep the newest application for each college)
+        const uniqueStudentIDs = new Set();
+        const uniqueApplications = allApplications.filter(app => {
+          // If this studentId hasn't been seen yet, keep this application
+          if (!uniqueStudentIDs.has(app.studentId)) {
+            uniqueStudentIDs.add(app.studentId);
+            return true;
+          }
+          return false; // Skip duplicates
+        });
+        
+        // Set filtered applications list
+        setApplications(uniqueApplications);
+        
+        // Get student details from the most recent application
+        if (allApplications.length > 0 && allApplications[0]?.studentDetails) {
+          setStudentDetails(allApplications[0].studentDetails);
         } else {
-          setError('Incomplete student information found');
+          setError("Incomplete student information found");
         }
+        
       } catch (error) {
         console.error('Error fetching student details:', error);
         setError('Failed to fetch student details. Please try again later.');
@@ -102,6 +111,7 @@ const SeeApplicationsPage = () => {
         <p><strong>Father's Phone:</strong> {studentDetails.fatherPhone || 'N/A'}</p>
         <p><strong>Mother's Name:</strong> {studentDetails.motherName || 'N/A'}</p>
         <p><strong>Mother's Phone:</strong> {studentDetails.motherPhone || 'N/A'}</p>
+        
         {studentDetails.email && (
           <button className="custom-card-button" onClick={handleOpenMail}>Open Mail</button>
         )}
