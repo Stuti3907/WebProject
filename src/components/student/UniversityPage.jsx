@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { collection, addDoc, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, getDoc, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { getAuth } from 'firebase/auth';
 import './UniversityPage.css';
@@ -11,6 +11,8 @@ function UniversityDetails() {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [applicationSubmitted, setApplicationSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [applicationId, setApplicationId] = useState(null);
     const { collegeId } = useParams();
     console.log("Extracted collegeId from URL:", collegeId);    
     const auth = getAuth();
@@ -78,7 +80,17 @@ function UniversityDetails() {
                         const collegeData = collegeSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))[0];
                         setCollegeDetails(collegeData);
                     } else {
-                        console.log("No document with the matching collegeId field found");
+                        // Try searching by college name as fallback
+                        const nameQuery = query(collection(db, "applications"), 
+                            where("collegeName", "==", "Harvard University"));
+                        const nameSnapshot = await getDocs(nameQuery);
+                        
+                        if (!nameSnapshot.empty) {
+                            const collegeData = nameSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))[0];
+                            setCollegeDetails(collegeData);
+                        } else {
+                            console.log("No matching college document found")
+                        }
                     }
                 }
                 
@@ -95,28 +107,60 @@ function UniversityDetails() {
     // Check if application was already submitted
     useEffect(() => {
         const checkExistingApplication = async () => {
-            if (!currentUser || !collegeDetails) return;
-            
+            if (!currentUser || !collegeId) return;
+    
             try {
-                // Check if the student already applied to this college
+                // Check local storage first for quick verification
+                const localStorageKey = `application_${currentUser.uid}_${collegeId}`;
+                const localStorageApp = localStorage.getItem(localStorageKey);
+                
+                if (localStorageApp) {
+                    setApplicationSubmitted(true);
+                    setApplicationId(localStorageApp);
+                    console.log("Found existing application in local storage:", localStorageApp);
+                    return;
+                }
+                
+                // Check for application using the URL collegeId
                 const applicationQuery = query(
                     collection(db, "studentApplications"),
                     where("studentId", "==", currentUser.uid),
                     where("collegeId", "==", collegeId)
                 );
                 
-                const applicationSnapshot = await getDocs(applicationQuery);
+                let applicationSnapshot = await getDocs(applicationQuery);
+                
+                // If not found, try college name as a backup check
+                if (applicationSnapshot.empty && collegeDetails?.collegeName) {
+                    const nameQuery = query(
+                        collection(db, "studentApplications"),
+                        where("studentId", "==", currentUser.uid),
+                        where("collegeName", "==", collegeDetails.collegeName)
+                    );
+                    
+                    applicationSnapshot = await getDocs(nameQuery);
+                }
                 
                 if (!applicationSnapshot.empty) {
+                    const appDoc = applicationSnapshot.docs[0];
                     setApplicationSubmitted(true);
+                    setApplicationId(appDoc.id);
+                    
+                    // Store in localStorage for faster checking on reload
+                    localStorage.setItem(localStorageKey, appDoc.id);
+                    console.log("Found existing application in database:", appDoc.id);
+                } else {
+                    setApplicationSubmitted(false);
+                    console.log("No existing application found for this college");
                 }
             } catch (error) {
                 console.error("Error checking existing application:", error);
             }
         };
-
+    
         checkExistingApplication();
-    }, [currentUser, collegeId, collegeDetails]);
+    }, [currentUser, collegeId, collegeDetails]); 
+    
 
     const handleSubmit = async () => {
         if (!currentUser) {
@@ -133,31 +177,61 @@ function UniversityDetails() {
             window.alert("Please complete your profile before submitting an application.");
             return;
         }
+        
+        if (isSubmitting) {
+            return; // Prevent multiple clicks
+        }
     
         console.log("Starting application submission process...");
+        setIsSubmitting(true);
     
         try {
-            // First, fetch the correct collegeId from "applications" collection
-            const collegeQuery = query(collection(db, "applications"), where("collegeName", "==", collegeDetails.collegeName));
-            const collegeSnapshot = await getDocs(collegeQuery);
+            // Create a unique local storage key for this application
+            const localStorageKey = `application_${currentUser.uid}_${collegeId}`;
+            
+            // Double-check the latest application status before proceeding
+            const applicationQuery = query(
+                collection(db, "studentApplications"),
+                where("studentId", "==", currentUser.uid),
+                where("collegeId", "==", collegeId)
+            );
     
-            if (collegeSnapshot.empty) {
-                console.log("No matching college found in 'applications' collection.");
-                window.alert("College details not found in database.");
+            const applicationSnapshot = await getDocs(applicationQuery);
+            if (!applicationSnapshot.empty) {
+                setApplicationSubmitted(true);
+                const appId = applicationSnapshot.docs[0].id;
+                setApplicationId(appId);
+                localStorage.setItem(localStorageKey, appId);
+                window.alert("You have already applied to this college.");
+                setIsSubmitting(false);
                 return;
             }
     
-            // Extract the first matching document's collegeId
-            const collegeData = collegeSnapshot.docs[0].data();
-            const actualCollegeId = collegeData.collegeId;
-            console.log("Fetched College ID from 'applications':", actualCollegeId);
+            // Proceed with fetching college ID
+            const collegeQuery = query(
+                collection(db, "applications"),
+                where("collegeName", "==", collegeDetails.collegeName)
+            );
+            const collegeSnapshot = await getDocs(collegeQuery);
     
-            // Proceed with storing the application
+            let collegeData = {};
+            if (!collegeSnapshot.empty) {
+                collegeData = collegeSnapshot.docs[0].data();
+            } else {
+                console.log("Using existing college details as fallback");
+                collegeData = collegeDetails;
+            }
+    
+            // Extract the reliable collegeId
+            const actualCollegeId = collegeData.collegeId || collegeId;
+            console.log("Using college ID for application:", actualCollegeId);
+    
+            // Store the application
             const applicationData = {
                 studentId: currentUser.uid,
-                collegeId: actualCollegeId,  // Use fetched collegeId
+                collegeId: actualCollegeId,
                 collegeName: collegeDetails.collegeName,
-                collegeUserId: collegeData.userId || actualCollegeId, // Ensure correct college owner
+                collegeUserId: collegeData.userId || actualCollegeId,
                 studentDetails: profileData,
                 status: "pending",
                 timestamp: new Date()
@@ -165,31 +239,51 @@ function UniversityDetails() {
     
             console.log("Application data to be stored:", applicationData);
     
-            // Store the application in global "studentApplications" collection
+            // Add to the global applications collection
             const studentAppRef = await addDoc(collection(db, "studentApplications"), applicationData);
             console.log("Global application added with ID:", studentAppRef.id);
+            
+            // Store the application ID for future reference
+            setApplicationId(studentAppRef.id);
+            
+            // Save to localStorage to prevent resubmission even after page reload
+            localStorage.setItem(localStorageKey, studentAppRef.id);
     
-            // Store the application in the college user's collection
-            const collegeApplicationData = {
-                studentId: currentUser.uid,
-                applicationId: studentAppRef.id,
-                studentDetails: profileData,
-                status: "pending",
-                timestamp: new Date()
-            };
-    
-            await addDoc(collection(db, "users", collegeData.userId || actualCollegeId, "applications"), collegeApplicationData);
-            console.log("College-specific application added successfully.");
+            // Also add to the college's applications subcollection
+            if (collegeData.userId) {
+                await addDoc(
+                    collection(db, "users", collegeData.userId, "applications"),
+                    {
+                        studentId: currentUser.uid,
+                        applicationId: studentAppRef.id,
+                        studentDetails: profileData,
+                        status: "pending",
+                        timestamp: new Date()
+                    }
+                );
+            }
+            
+            // Add to user's applications collection for easy tracking
+            await setDoc(
+                doc(db, "users", currentUser.uid, "applications", studentAppRef.id),
+                {
+                    collegeId: actualCollegeId,
+                    collegeName: collegeDetails.collegeName,
+                    applicationId: studentAppRef.id,
+                    status: "pending",
+                    timestamp: new Date()
+                }
+            );
     
             setApplicationSubmitted(true);
             window.alert("Application submitted successfully!");
-    
         } catch (error) {
             console.error("Error submitting application:", error);
             window.alert("Error submitting application. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
-    
 
     if (loading) {
         return <div className="university-container"><p>Loading details...</p></div>;
@@ -208,14 +302,21 @@ function UniversityDetails() {
                         <p className="detail">Location: <span className="value">{collegeDetails.location}</span></p>
                         <p className="detail">Start Term: <span className="value">{collegeDetails.startTerm}</span></p>
                         <button 
-                            className="submit-button" 
+                            className={`submit-button ${(applicationSubmitted || isSubmitting || !profileData) ? 'disabled' : ''}`} 
                             onClick={handleSubmit}
-                            disabled={applicationSubmitted || !profileData}
+                            disabled={applicationSubmitted || isSubmitting || !profileData}
                         >
-                            {applicationSubmitted ? "Application Submitted" : "Submit Application"}
+                            {applicationSubmitted ? "Application Submitted" : 
+                             isSubmitting ? "Submitting..." : "Submit Application"}
                         </button>
                         {!profileData && (
                             <p className="warning-text">Please complete your profile before submitting an application.</p>
+                        )}
+                        {applicationSubmitted && (
+                            <p className="success-text">You have already applied to this university.</p>
+                        )}
+                        {applicationId && (
+                            <p className="detail">Application ID: <span className="value">{applicationId}</span></p>
                         )}
                     </div>
                 </div>
